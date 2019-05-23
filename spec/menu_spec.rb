@@ -2,6 +2,7 @@ require_relative '../lib/menu.rb'
 
 describe 'Menus' do
   before do
+    allow(STDOUT).to receive(:puts) # .and_call_original
     allow(STDOUT).to receive(:write) # .and_call_original
   end
 
@@ -75,7 +76,7 @@ describe 'Menus' do
     context 'and the player enters previous' do
       it 'does not change the page' do
         allow(STDIN).to receive(:gets).and_return('prev', 'nor')
-        expect(STDOUT).to receive(:write).with("north) go north").twice
+        expect(STDOUT).to receive(:puts).with("north) go north").twice
         do_menu('Test Menu', @single_page_menu)
       end
     end
@@ -83,7 +84,7 @@ describe 'Menus' do
     context 'and the player enters next' do
       it 'does not change the page' do
         allow(STDIN).to receive(:gets).and_return('next', 'nor')
-        expect(STDOUT).to receive(:write).with("north) go north").twice
+        expect(STDOUT).to receive(:puts).with("north) go north").twice
         do_menu('Test Menu', @single_page_menu)
       end
     end
@@ -126,7 +127,7 @@ describe 'Menus' do
       context 'and the player chooses previous' do
         it 'does not change the page' do
           allow(STDIN).to receive(:gets).and_return('prev', 'OR')
-          expect(STDOUT).to receive(:write).with(/ page 1 of 5 /).twice
+          expect(STDOUT).to receive(:puts).with(/ page 1 of 5 /).twice
           do_menu('Test Menu', @multi_page_menu)
         end
       end
@@ -134,8 +135,8 @@ describe 'Menus' do
       context 'and the player chooses next' do
         it 'advances to the next page' do
           allow(STDIN).to receive(:gets).and_return('next', 'OR')
-          expect(STDOUT).to receive(:write).with(/ page 1 of 5 /)
-          expect(STDOUT).to receive(:write).with(/ page 2 of 5 /)
+          expect(STDOUT).to receive(:puts).with(/ page 1 of 5 /)
+          expect(STDOUT).to receive(:puts).with(/ page 2 of 5 /)
           do_menu('Test Menu', @multi_page_menu)
         end
       end
@@ -145,8 +146,8 @@ describe 'Menus' do
       context 'and the player chooses previous' do
         it 'goes back to the previous page' do
           allow(STDIN).to receive(:gets).and_return('next', 'prev', 'OR')
-          expect(STDOUT).to receive(:write).with(/ page 1 of 5 /).twice
-          expect(STDOUT).to receive(:write).with(/ page 2 of 5 /)
+          expect(STDOUT).to receive(:puts).with(/ page 1 of 5 /).twice
+          expect(STDOUT).to receive(:puts).with(/ page 2 of 5 /)
           do_menu('Test Menu', @multi_page_menu)
         end
       end
@@ -154,9 +155,9 @@ describe 'Menus' do
       context 'and the player chooses next' do
         it 'advances to the next page' do
           allow(STDIN).to receive(:gets).and_return('next', 'next', 'OR')
-          expect(STDOUT).to receive(:write).with(/ page 1 of 5 /)
-          expect(STDOUT).to receive(:write).with(/ page 2 of 5 /)
-          expect(STDOUT).to receive(:write).with(/ page 3 of 5 /)
+          expect(STDOUT).to receive(:puts).with(/ page 1 of 5 /)
+          expect(STDOUT).to receive(:puts).with(/ page 2 of 5 /)
+          expect(STDOUT).to receive(:puts).with(/ page 3 of 5 /)
           do_menu('Test Menu', @multi_page_menu)
         end
       end
@@ -166,8 +167,8 @@ describe 'Menus' do
       context 'and the player chooses previous' do
         it 'goes back to the previous page' do
           allow(STDIN).to receive(:gets).and_return('next', 'next', 'next', 'next', 'prev', 'OR')
-          expect(STDOUT).to receive(:write).with(/ page 4 of 5 /).twice
-          expect(STDOUT).to receive(:write).with(/ page 5 of 5 /)
+          expect(STDOUT).to receive(:puts).with(/ page 4 of 5 /).twice
+          expect(STDOUT).to receive(:puts).with(/ page 5 of 5 /)
           do_menu('Test Menu', @multi_page_menu)
         end
       end
@@ -175,7 +176,7 @@ describe 'Menus' do
       context 'and the player chooses next' do
         it 'goes back to the previous page' do
           allow(STDIN).to receive(:gets).and_return('next', 'next', 'next', 'next', 'next', 'OR')
-          expect(STDOUT).to receive(:write).with(/ page 5 of 5 /).twice
+          expect(STDOUT).to receive(:puts).with(/ page 5 of 5 /).twice
           do_menu('Test Menu', @multi_page_menu)
         end
       end
@@ -199,7 +200,7 @@ describe 'Menus' do
       context 'and the input matches more than one option on the current page' do
         it 'prompts again' do
           allow(STDIN).to receive(:gets).and_return('next', 'next', 'next', 'next', 'W', 'OR')
-          expect(STDOUT).to receive(:write).with('UT) Utah').twice
+          expect(STDOUT).to receive(:puts).with('UT) Utah').twice
           do_menu('Test Menu', @multi_page_menu)
         end
       end
