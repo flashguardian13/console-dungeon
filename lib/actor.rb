@@ -135,24 +135,24 @@ class Actor
     value
   end
 
-  def melee_attack(other, out = nil)
+  def melee_attack(other, weapon, out = nil)
     out.puts "#{@name} attacks #{other.name} ..." if out
 
-    roll = random(1..20)
+    roll = rand(1..20)
     result = roll + self[:base_attack_bonus] + self[:strength_modifier]
 
     if roll < 20 && (result < other[:armor_class] || roll <= 1)
       out.puts "Miss!" if out
     else
-      damage = foo
+      damage = weapon.damage.roll
 
-      if roll >= threat_range
-        confirm_roll = random(1..20)
+      if roll >= weapon.threat_range
+        confirm_roll = rand(1..20)
         confirm_result = confirm_roll + self[:base_attack_bonus] + self[:strength_modifier]
 
-        if confirm_roll < 20 && (confirm_result < other[:armor_class] || confirm_roll <= 1)
+        if confirm_roll >= 20 || (confirm_roll > 1 && confirm_result >= other[:armor_class])
           out.puts "Critical hit!" if out
-          damage += foo
+          damage += weapon.damage.roll
         end
       end
 

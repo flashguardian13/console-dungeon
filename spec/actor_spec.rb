@@ -220,10 +220,28 @@ describe Actor do
   end
 
   describe '#melee_attack' do
-    it 'does stuff' do
-      attacker = Actor.new
-      target = Actor.new
-      raise "not yet implemented"
+    before do
+      @attacker = Actor.new
+
+      @target = Actor.new
+      @target.attributes[:hit_points] = 1
+
+      @weapon = Weapon.new
+      @weapon.set_damage(Dice.from_str('1d6'))
+      @weapon.set_threat_range(20)
+    end
+
+    it 'always misses on a natural 1' do
+      @attacker.attributes[:fighter_level] = 30
+      allow(@attacker).to receive(:rand).and_return(1)
+      expect { @attacker.melee_attack(@target, @weapon) }.not_to change { @target[:hit_points] }
+    end
+
+    it 'always hits on a natural 20' do
+      @attacker.attributes[:fighter_level] = 0
+      @target.attributes[:dexterity] = 40
+      allow(@attacker).to receive(:rand).and_return(20)
+      expect { @attacker.melee_attack(@target, @weapon) }.to change { @target[:hit_points] }
     end
   end
 end
